@@ -31,8 +31,7 @@ async function createChart() {
 
     const parseDate = d3.timeParse('%d-%b-%y');
 
-    const zoom = d3.zoom().scaleExtent([1, 5]).translateExtent([[0, 0], [width, height]])
-        .extent([[0, 0], [width, height]])
+    const zoom = d3.zoom()
         .on('zoom', zoomed);
 
     const x = techan.scale.financetime()
