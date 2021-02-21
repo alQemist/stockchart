@@ -3,7 +3,7 @@
 Objectives:
 
 - Make zooming look like [yahoo chart](https://finance.yahoo.com/chart/AAPL/)
-- y-axis should adapt to current visible data (min/max)
+- y-axis should adapt to current visible data (min/max) during/after zoom
 - Make chart ui smooth (scrolling through the x axis should have the same effect as zooming)
 - Make legend text larger
 
