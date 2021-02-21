@@ -1,0 +1,244 @@
+text {
+    fill: #000;
+}
+
+text.coords {
+    fill: #212020;
+}
+
+button {
+    position: absolute;
+    right: 20px;
+    top: 440px;
+    display: none;
+}
+
+path.candle {
+    stroke: #000000;
+}
+
+path.candle.body {
+    stroke-width: 0;
+}
+
+path.candle.up {
+    fill: #00AA00;
+    stroke: #00AA00;
+}
+
+path.candle.down {
+    fill: #FF0000;
+    stroke: #FF0000;
+}
+path.candle {
+    stroke: #000000;
+}
+
+path.candle.body {
+    stroke-width: 0;
+}
+
+path.candle.up {
+    fill: #00AA00;
+    stroke: #00AA00;
+}
+.trendline-minor {
+    stroke: blue;
+    stroke-width: 1;
+}
+
+.trendline-minor circle {
+    stroke-width: 0.5;
+}
+
+.mouseover .trendline-minor path {
+    stroke-width: 1.5;
+}
+
+.mouseover .trendline-minor circle {
+    stroke-width: 1.5;
+    display: inline;
+}
+
+.trendline-intermediate {
+    stroke: orange;
+    stroke-width: 1.5;
+}
+
+.trendline-intermediate circle {
+    stroke-width: 0.5;
+}
+
+.mouseover .trendline-intermediate path {
+    stroke-width: 1.5;
+}
+
+.mouseover .trendline-intermediate circle {
+    stroke-width: 1.5;
+    display: inline;
+}
+
+
+.trendline-major {
+    stroke: darkgreen;
+    stroke-width: 1.5;
+}
+
+.trendline-major circle {
+    stroke-width: 0.5;
+}
+
+.mouseover .trendline-major path {
+    stroke-width: 1.5;
+}
+
+.mouseover .trendline-major circle {
+    stroke-width: 1.5;
+    display: inline;
+}
+
+
+
+.interaction path, .interaction circle {
+    pointer-events: all;
+}
+
+.interaction .body {
+    cursor: move;
+}
+
+.interaction .start, .interaction .end {
+    cursor: nwse-resize;
+}
+
+path.candle.down {
+    fill: #FF0000;
+    stroke: #FF0000;
+}
+path.volume {
+    fill: #AAAAAA;
+    opacity: 0.5;
+}
+
+path.volume.up {
+    fill: #b2f1b2;
+}
+
+path.volume.down {
+    fill: #cf9a9a;
+}
+
+.y.annotation.left path {
+    fill: #00AA00;
+}
+
+.y.annotation.right path {
+    fill: #FF0000;
+}
+
+.x.annotation path {
+    fill: #DDD80E;
+}
+
+.crosshair {
+    cursor: crosshair;
+}
+
+.crosshair path.wire {
+    stroke: #DDDDDD;
+    stroke-dasharray: 1, 1;
+}
+
+.crosshair .axisannotation path {
+    fill: #DDDDDD;
+}
+
+.axis text {
+    font-size: 6px;
+}
+
+text.symbol {
+    fill: #BBBBBB;
+}
+
+path.candle {
+    stroke: #000000;
+}
+
+path.candle.body {
+    stroke-width: 0;
+}
+
+path.candle.up {
+    fill: #00AA00;
+    stroke: #00AA00;
+}
+
+path.candle.down {
+    fill: #FF0000;
+    stroke: #FF0000;
+}
+
+path.volume {
+    fill: #DDDDDD;
+}
+
+rect.pane {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+}
+
+.indicator path.line {
+    fill: none;
+    stroke-width: 1;
+}
+
+.ma-0 path.line {
+    stroke: #1f77b4;
+}
+
+.ma-1 path.line {
+    stroke: #aec7e8;
+}
+
+.ma-2 path.line {
+    stroke: #ff7f0e;
+}
+
+button {
+    position: absolute;
+    right: 110px;
+    top: 25px;
+}
+
+.minor-circle-legend  {
+    fill: transparent;
+    cursor: pointer;
+}
+
+.intermediate-circle-legend {
+    fill: transparent;
+    cursor: pointer;
+}
+
+.major-circle-legend {
+    fill: transparent;
+    cursor: pointer;
+}
+
+.minor-circle-legend.active {
+    fill: blue;
+}
+
+.intermediate-circle-legend.active {
+    fill: orange;
+}
+
+.major-circle-legend.active {
+    fill: darkgreen;
+}
+.intermediate-text-legend, .minor-text-legend, .major-text-legend {
+    cursor: pointer;
+    user-select: none;
+}
