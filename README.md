@@ -13,4 +13,7 @@ If you find something else that can be improved, please fix this too.
 If you hit 5 hours worktime, please ask before proceeding.
 
 
+Please push changes to this repository from time to time. 
+
+
 Thank you Lam!
