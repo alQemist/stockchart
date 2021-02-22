@@ -2,6 +2,7 @@ buildFinanceChart();
 
 async function buildFinanceChart() {
     const dim = initializeDim();
+    const tooltip = buildTooltip();
 
     const indicatorTop = d3.scaleLinear()
         .range([dim.indicator.top, dim.indicator.bottom]);
@@ -199,8 +200,6 @@ async function buildFinanceChart() {
         volume: +d.volume
     })).sort((a, b) => d3.ascending(accessor.d(a), accessor.d(b)));
 
-    console.log('financeData', data);
-
     x.domain(techan.scale.plot.time(data).domain());
     y.domain(techan.scale.plot.ohlc(data.slice(indicatorPreRoll)).domain());
     yPercent.domain(techan.scale.plot.percent(y, accessor(data[indicatorPreRoll])).domain());
@@ -209,17 +208,8 @@ async function buildFinanceChart() {
     svg.select('g.candlestick').datum(data).call(candlestick);
     svg.select('g.close.annotation').datum([data[data.length-1]]).call(closeAnnotation);
     svg.select('g.volume').datum(data).call(volume);
-    // svg.select('g.sma.ma-0').datum(techan.indicator.sma().period(10)(data)).call(sma0);
-    // svg.select('g.sma.ma-1').datum(techan.indicator.sma().period(20)(data)).call(sma1);
-    // svg.select('g.ema.ma-2').datum(techan.indicator.ema().period(50)(data)).call(ema2);
-    // svg.select('g.macd .indicator-plot').datum(macdData).call(macd);
-    // svg.select('g.rsi .indicator-plot').datum(rsiData).call(rsi);
 
     svg.select('g.crosshair.ohlc').call(ohlcCrosshair).call(zoom);
-    // svg.select('g.crosshair.macd').call(macdCrosshair).call(zoom);
-    // svg.select('g.crosshair.rsi').call(rsiCrosshair).call(zoom);
-    // svg.select('g.trendlines').datum(trendlineData).call(trendline).call(trendline.drag);
-    // svg.select('g.supstances').datum(supstanceData).call(supstance).call(supstance.drag);
     svg.selectAll('g.trendline-minor')
         .datum(createTrendlineData(financeData, 'minor'))
         .call(line);
@@ -239,7 +229,7 @@ async function buildFinanceChart() {
 
 
     // Stash for zooming
-    zoomableInit = x.zoomable().domain([indicatorPreRoll, data.length]).copy(); // Zoom in a little to hide indicator preroll
+    zoomableInit = x.zoomable().domain([indicatorPreRoll, data.length]).copy();
     yInit = y.copy();
     yPercentInit = yPercent.copy();
 
@@ -264,25 +254,11 @@ async function buildFinanceChart() {
         svg.select('g.ohlc .axis').call(yAxis);
         svg.select('g.volume.axis').call(volumeAxis);
         svg.select('g.percent.axis').call(percentAxis);
-        // svg.select('g.macd .axis.right').call(macdAxis);
-        // svg.select('g.rsi .axis.right').call(rsiAxis);
-        // svg.select('g.macd .axis.left').call(macdAxisLeft);
-        // svg.select('g.rsi .axis.left').call(rsiAxisLeft);
 
-        // We know the data does not change, a simple refresh that does not perform data joins will suffice.
         svg.select('g.candlestick').call(candlestick.refresh);
         svg.select('g.close.annotation').call(closeAnnotation.refresh);
         svg.select('g.volume').call(volume.refresh);
-        // svg.select('g .sma.ma-0').call(sma0.refresh);
-        // svg.select('g .sma.ma-1').call(sma1.refresh);
-        // svg.select('g .ema.ma-2').call(ema2.refresh);
-        // svg.select('g.macd .indicator-plot').call(macd.refresh);
-        // svg.select('g.rsi .indicator-plot').call(rsi.refresh);
         svg.select('g.crosshair.ohlc').call(ohlcCrosshair.refresh);
-        // svg.select('g.crosshair.macd').call(macdCrosshair.refresh);
-        // svg.select('g.crosshair.rsi').call(rsiCrosshair.refresh);
-        // svg.select('g.trendlines').call(trendline.refresh);
-        // svg.select('g.supstances').call(supstance.refresh);
         svg.selectAll('g.trendline-minor').call(line.refresh);
         svg.selectAll('g.trendline-intermediate').call(lineInter.refresh);
         svg.selectAll('g.trendline-major').call(lineMajor.refresh);
@@ -441,4 +417,73 @@ function buildLineLegends(svg, dim) {
         .attr('x', 10)
         .attr('y', 4)
         .text('Major');
+}
+
+function buildTooltip() {
+    let tooltip = document.querySelector('.tooltip');
+    
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+
+        document.body.append(tooltip);
+    }
+
+    tooltip = d3.select(tooltip);
+
+    const renderContent = (data) => {
+        const htmlContent = `
+            <div>
+                <h4>2020</h4>
+                <div class="tooltip-item">
+                    <span>Open: </span>
+                    <span>${data.open}</span>
+                </div>
+                <div class="tooltip-item">
+                    <span>Close: </span>
+                    <span>${data.close}</span>
+                </div>
+                <div class="tooltip-item">
+                    <span>Low: </span>
+                    <span>${data.low}</span>
+                </div>
+                <div class="tooltip-item">
+                    <span>High: </span>
+                    <span>${data.high}</span>
+                </div>
+                <div class="tooltip-item">
+                    <span>Volume: </span>
+                    <span>${data.volume}</span>
+                </div>
+            </div>
+        `;
+
+        tooltip.html(htmlContent);
+    };
+
+    const show = ({ position, data }) => {
+        tooltip
+            .attr('class', 'tooltip tooltip')
+            .style('left', position.left + 'px')
+            .style('top', position.top + 'px');
+
+        renderContent(data);
+    };
+
+    const hide = () => {
+        tooltip
+            .attr('class', 'tooltip tooltip--hidden');
+    };
+
+    const destroy = () => {
+        tooltip.destroy();
+    };
+
+    hide();
+
+    return {
+        show,
+        hide,
+        destroy
+    };
 }
