@@ -184,6 +184,7 @@ path.volume {
 }
 
 rect.pane {
+    display: block;
     cursor: move;
     fill: none;
     pointer-events: all;

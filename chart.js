@@ -24,7 +24,12 @@ async function createChart() {
     document.getElementById('container').innerHTML = '';
     const fullWidth = window.outerWidth;
     const fullHeight = 700;
-    const margin = {top: 20, right: 70, bottom: 30, left: 70};
+    const margin = {
+        top: 20, 
+        right: 70, 
+        bottom: 30, 
+        left: 70
+    };
     const width = fullWidth - 160 - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
     const volumeHeight = fullHeight * .25;
@@ -250,7 +255,7 @@ async function createChart() {
 
     svg.append('rect')
         .attr('class', 'pane')
-        .attr('display', 'none')
+        .style('display', 'block')
         .attr('width', width)
         .attr('height', height)
         .call(zoom);
