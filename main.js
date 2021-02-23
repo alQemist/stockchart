@@ -4,12 +4,17 @@ async function buildFinanceChart() {
     const dim = initializeDim();
     const tooltip = buildTooltip();
 
+    const financeData = await fetchData();
+    const cleanedData = cleanData(financeData);
+
     const indicatorTop = d3.scaleLinear()
         .range([dim.indicator.top, dim.indicator.bottom]);
 
     const parseDate = d3.timeParse('%d-%b-%y');
 
+    const ZOOM_SCALE_EXTENT = [1, 8];
     const zoom = d3.zoom()
+        .scaleExtent(ZOOM_SCALE_EXTENT)  
         .on('zoom', zoomed);
 
     const x = techan.scale.financetime()
@@ -27,6 +32,18 @@ async function buildFinanceChart() {
     const candlestick = techan.plot.candlestick()
         .xScale(x)
         .yScale(y);
+
+    const accessor = candlestick.accessor();
+    const indicatorPreRoll = 33;
+
+    const data = cleanedData.map(d => ({
+        date: moment(d.datetime, 'YYYY-MM-DD').toDate(),
+        open: +d.open,
+        high: +d.high,
+        low: +d.low,
+        close: +d.close,
+        volume: +d.volume
+    })).sort((a, b) => d3.ascending(accessor.d(a), accessor.d(b)));
 
     const volume = techan.plot.volume()
         .accessor(candlestick.accessor())
@@ -52,7 +69,8 @@ async function buildFinanceChart() {
         .width(65)
         .translate([0, dim.plot.height]);
     
-    const yAxis = d3.axisRight(y);
+    const yAxis = d3.axisRight(y)
+        .tickPadding(8);
     const ohlcAnnotation = techan.plot.axisannotation()
         .axis(yAxis)
         .orient('right')
@@ -67,6 +85,7 @@ async function buildFinanceChart() {
         .translate([x(1), 0]);
 
     const percentAxis = d3.axisLeft(yPercent)
+        .tickPadding(8)
         .tickFormat(d3.format('+.1%'));
 
     const percentAnnotation = techan.plot.axisannotation()
@@ -87,7 +106,16 @@ async function buildFinanceChart() {
         .yScale(ohlcAnnotation.axis().scale())
         .xAnnotation(timeAnnotation)
         .yAnnotation([ohlcAnnotation, percentAnnotation, volumeAnnotation])
-        .verticalWireRange([0, dim.plot.height]);
+        .verticalWireRange([0, dim.plot.height])
+        .on('out', () => {
+            tooltip.hide();
+        })
+        .on('move', (coord) => {
+            const foundData = data.find(d => d.date === coord.x);
+            if (foundData) {
+                tooltip.show(foundData);
+            }
+        });;
 
     let svg = d3.select('#container').append('svg')
         .attr('width', dim.width)
@@ -185,21 +213,6 @@ async function buildFinanceChart() {
         .attr('class', 'trendline-major')
         .attr('clip-path', 'url(#ohlcClip)');
 
-    const accessor = candlestick.accessor();
-    const indicatorPreRoll = 33;
-    
-    const financeData = await fetchData();
-    const cleanedData = cleanData(financeData);
-
-    const data = cleanedData.map(d => ({
-        date: moment(d.datetime, 'YYYY-MM-DD').toDate(),
-        open: +d.open,
-        high: +d.high,
-        low: +d.low,
-        close: +d.close,
-        volume: +d.volume
-    })).sort((a, b) => d3.ascending(accessor.d(a), accessor.d(b)));
-
     x.domain(techan.scale.plot.time(data).domain());
     y.domain(techan.scale.plot.ohlc(data.slice(indicatorPreRoll)).domain());
     yPercent.domain(techan.scale.plot.percent(y, accessor(data[indicatorPreRoll])).domain());
@@ -271,19 +284,19 @@ function initializeDim() {
 
     const dim = {
         width: clientRect.width,
-        height: 500,
+        height: 600,
         margin: {
-            top: 70,
+            top: 24,
             right: 120,
             bottom: 70,
             left: 88
         },
         ohlc: {
-            height: 350
+            height: 506
         },
         indicator: {
             height: 65,
-            padding: 6
+            padding: 8
         }
     };
 
@@ -425,8 +438,8 @@ function buildTooltip() {
     if (!tooltip) {
         tooltip = document.createElement('div');
         tooltip.className = 'tooltip';
-
-        document.body.append(tooltip);
+        const container = document.getElementById('container');
+        container.append(tooltip);
     }
 
     tooltip = d3.select(tooltip);
@@ -434,26 +447,26 @@ function buildTooltip() {
     const renderContent = (data) => {
         const htmlContent = `
             <div>
-                <h4>2020</h4>
+                <h4>${d3.timeFormat('%B %d, %Y')(data.date)}</h4>
                 <div class="tooltip-item">
                     <span>Open: </span>
-                    <span>${data.open}</span>
+                    <span>${d3.format(',.2f')(data.open)}</span>
                 </div>
                 <div class="tooltip-item">
                     <span>Close: </span>
-                    <span>${data.close}</span>
+                    <span>${d3.format(',.2f')(data.close)}</span>
                 </div>
                 <div class="tooltip-item">
                     <span>Low: </span>
-                    <span>${data.low}</span>
+                    <span>${d3.format(',.2f')(data.low)}</span>
                 </div>
                 <div class="tooltip-item">
                     <span>High: </span>
-                    <span>${data.high}</span>
+                    <span>${d3.format(',.2f')(data.high)}</span>
                 </div>
                 <div class="tooltip-item">
                     <span>Volume: </span>
-                    <span>${data.volume}</span>
+                    <span>${d3.format(',.2f')(data.volume)}</span>
                 </div>
             </div>
         `;
@@ -461,11 +474,9 @@ function buildTooltip() {
         tooltip.html(htmlContent);
     };
 
-    const show = ({ position, data }) => {
+    const show = (data) => {
         tooltip
-            .attr('class', 'tooltip tooltip')
-            .style('left', position.left + 'px')
-            .style('top', position.top + 'px');
+            .attr('class', 'tooltip')
 
         renderContent(data);
     };
