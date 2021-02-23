@@ -18,7 +18,7 @@ async function buildFinanceChart() {
         .on('zoom', zoomed);
 
     const x = techan.scale.financetime()
-        .range([0, dim.plot.width]);;
+        .range([0, dim.plot.width]);
     const y = d3.scaleLinear()
         .range([dim.ohlc.height, 0]);
 
@@ -256,8 +256,8 @@ async function buildFinanceChart() {
 
     function zoomed() {
         x.zoomable().domain(d3.event.transform.rescaleX(zoomableInit).domain());
-        y.domain(d3.event.transform.rescaleY(yInit).domain());
-        yPercent.domain(d3.event.transform.rescaleY(yPercentInit).domain());
+        //y.domain(d3.event.transform.rescaleY(yInit).domain());
+        //yPercent.domain(d3.event.transform.rescaleY(yPercentInit).domain());
 
         draw();
     }
