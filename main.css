@@ -42,7 +42,13 @@ path.candle.down {
 }
 
 path.volume {
-    fill: #DDDDDD;
+    stroke: #fff;
+}
+path.volume.up {
+    fill: #45b545;
+}
+path.volume.down {
+    fill: #f96565;
 }
 
 .indicator-plot path.line {
