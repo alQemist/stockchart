@@ -498,3 +498,17 @@ function buildTooltip() {
         destroy
     };
 }
+
+function buildResetButton({ onClick }) {
+    let resetButton = document.querySelector('.reset-button');
+    
+    if (!resetButton) {
+        resetButton = document.createElement('button');
+        resetButton.textContent = 'Reset';
+        resetButton.className = 'reset-button';
+        const container = document.getElementById('container');
+        container.append(resetButton);
+    }
+
+    resetButton.addEventListener('click', onClick);
+}
