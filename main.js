@@ -272,9 +272,9 @@ async function buildFinanceChart() {
         svg.select('g.close.annotation').call(closeAnnotation.refresh);
         svg.select('g.volume').call(volume.refresh);
         svg.select('g.crosshair.ohlc').call(ohlcCrosshair.refresh);
-        svg.selectAll('g.trendline-minor').call(line.refresh);
-        svg.selectAll('g.trendline-intermediate').call(lineInter.refresh);
         svg.selectAll('g.trendline-major').call(lineMajor.refresh);
+        svg.selectAll('g.trendline-intermediate').call(lineInter.refresh);
+        svg.selectAll('g.trendline-minor').call(line.refresh);
     }
 }
 
@@ -368,26 +368,26 @@ function buildLineLegends(svg, dim) {
         .attr('class', 'line-legends-group')
         .attr('transform', `translate(4, ${dim.plot.height + 49})`);
 
-    const minorLegendGroup = group.append('g')
+    const majorLegendGroup = group.append('g')
         .attr('class', 'line-legend-group line-legend-group--active')
+        .attr('transform', 'translate(0, 0)')
         .on('click', function () {
             this.classList.toggle('line-legend-group--active');
-            svg.selectAll('g.trendline-minor')
+            svg.selectAll('g.trendline-major')
                 .style('display', this.classList.contains('line-legend-group--active') ? 'block' : 'none');
         });
 
-    minorLegendGroup.append('circle')
-        .attr('fill', 'blue')
+    majorLegendGroup.append('circle')
+        .attr('fill', 'darkgreen')
         .attr('r', 5)
         .attr('cx', 0)
         .attr('cy', 0);
 
-    minorLegendGroup.append('text')
+    majorLegendGroup.append('text')
         .style('text-anchor', 'start')
         .attr('x', 10)
         .attr('y', 4)
-        .text('Minor');
-    
+        .text('Major');
 
     const intermediateLegendGroup = group.append('g')
         .attr('class', 'line-legend-group line-legend-group--active')
@@ -410,26 +410,26 @@ function buildLineLegends(svg, dim) {
         .attr('y', 4)
         .text('Intermediate');
 
-    const majorLegendGroup = group.append('g')
+    const minorLegendGroup = group.append('g')
         .attr('class', 'line-legend-group line-legend-group--active')
         .attr('transform', 'translate(144, 0)')
         .on('click', function () {
             this.classList.toggle('line-legend-group--active');
-            svg.selectAll('g.trendline-major')
+            svg.selectAll('g.trendline-minor')
                 .style('display', this.classList.contains('line-legend-group--active') ? 'block' : 'none');
         });
 
-    majorLegendGroup.append('circle')
-        .attr('fill', 'darkgreen')
+    minorLegendGroup.append('circle')
+        .attr('fill', 'blue')
         .attr('r', 5)
         .attr('cx', 0)
         .attr('cy', 0);
 
-    majorLegendGroup.append('text')
+    minorLegendGroup.append('text')
         .style('text-anchor', 'start')
         .attr('x', 10)
         .attr('y', 4)
-        .text('Major');
+        .text('Minor');
 }
 
 function buildTooltip() {

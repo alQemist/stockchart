@@ -210,9 +210,9 @@ path.middle, path.zero {
 }
 
 
-.trendline-major {
+.trendline-major path{
     stroke: darkgreen;
-    stroke-width: 1.5;
+    stroke-width: 2;
 }
 
 .trendline-major circle {
